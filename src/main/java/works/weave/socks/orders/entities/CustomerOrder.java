@@ -73,6 +73,10 @@ public class CustomerOrder {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getCustomerId() {
         return this.customerId;
     }
@@ -107,6 +111,10 @@ public class CustomerOrder {
 
     public Collection<Item> getItems() {
         return items;
+    }
+
+    public void setItems(Collection<Item> items) {
+        this.items = items;
     }
 
     public void setItems(List<Item> items) {

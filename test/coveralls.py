@@ -24,11 +24,6 @@ class JavaServices(unittest.TestCase):
                    'verify',
                    'jacoco:report',
                    'coveralls:report']
-        print("Coveralls command: ",
-              '-DserviceJobId=' + os.getenv('TRAVIS_JOB_ID'),
-              '-Dbranch=' + os.getenv('TRAVIS_BRANCH'),
-              '-DpullRequest=' + os.getenv('TRAVIS_PULL_REQUEST'),
-              '-DserviceName=' + 'TRAVIS')
         print(Docker().execute(command))
 
 

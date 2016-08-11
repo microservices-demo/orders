@@ -11,7 +11,7 @@ import java.util.List;
 @Document
 public class Cart {
     @NotNull
-    public String customerId; // Public instead of getters/setters.
+    private String customerId;
     @Id
     private String id;
     @DBRef
@@ -37,6 +37,30 @@ public class Cart {
     public Cart remove(Item item) {
         items.remove(item);
         return this;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 
     @Override
