@@ -15,9 +15,9 @@ import works.weave.socks.orders.config.OrdersConfigurationProperties;
 import works.weave.socks.orders.entities.*;
 import works.weave.socks.orders.repositories.CustomerOrderRepository;
 import works.weave.socks.orders.resources.NewOrderResource;
-import works.weave.socks.orders.resources.PaymentRequest;
-import works.weave.socks.orders.resources.PaymentResponse;
 import works.weave.socks.orders.services.AsyncGetService;
+import works.weave.socks.orders.values.PaymentRequest;
+import works.weave.socks.orders.values.PaymentResponse;
 
 import java.io.IOException;
 import java.util.Calendar;
