@@ -30,5 +30,6 @@ $DOCKER_CMD run \
     -e TRAVIS_BRANCH=$TRAVIS_BRANCH \
     -e TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST \
     -e TRAVIS=$TRAVIS \
+    -e COMMIT=$COMMIT \
     test-container \
-    sh -c export PYTHONPATH=\$PYTHONPATH:\$PWD/test ; python test/"$@"
+    sh -c "export PYTHONPATH=\$PYTHONPATH:\$PWD/test ; python test/$@"
