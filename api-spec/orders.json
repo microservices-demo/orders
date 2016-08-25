@@ -1,76 +1,72 @@
 {
-    "swagger":  "2.0",
-    "info":  {
-        "version":  "",
-        "title":  "Orders",
-        "description":  "Orders resources",
-        "license":  {
-	    "name":  "MIT",
-	    "url":  "http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT"
+    "swagger": "2.0",
+    "info": {
+        "version": "",
+        "title": "Carts and items",
+        "description": "Carts and items resources",
+        "license": {
+	    "name": "MIT",
+	    "url": "http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT"
 	}
     },
-    "host":  "orders",
-    "basePath":  "/",
-    "securityDefinitions":  {
-
-    },
-    "schemes":  [
+    "host": "orders",
+    "basePath": "/",
+    "securityDefinitions": {},
+    "schemes": [
         "http"
     ],
-    "consumes":  [
+    "consumes": [
         "application/json;charset=UTF-8",
         "text/plain"
     ],
-    "produces":  [
+    "produces": [
         "application/json;charset=UTF-8",
         "text/plain"
     ],
-    "paths":  {
-        "/orders":  {
-	    "post":  {
-	        "description":  "Create an order",
-	        "operationId":  "/orders POST",
-	        "produces":  [
-		    "application/json;charset=UTF-8"
-		],
-	        "parameters":  [
-
-		],
-	        "responses":  {
-		    "201":  {
-		        "description":  "Returns cart",
-		        "schema":  {
-			    "$ref":  "#/definitions/Order"
-			}
-		    }
-		}
-	    }
-	}
+    "paths": {
+        "/orders": {
+            "post": {
+                "description": "Create an order",
+                "operationId": "/orders POST",
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": "Returns cart",
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                }
+            }
+        }
     },
-    "definitions":  {
-        "Order":  {
-	    "title":  "Order",
-	    "type":  "object",
-	    "properties":  {
-	        "customer":  {
-		    "type":  "string"
-		},
-	        "address":  {
-		    "type":  "string"
-		},
-	        "card":  {
-		    "type":  "string"
-		},
-	        "items":  {
-		    "type":  "string"
-		}
-	    },
-	    "required":  [
-	        "customer",
-	        "address",
-	        "card",
-	        "items"
-	    ]
-	}
+    "definitions": {
+        "Order": {
+            "title": "Order",
+            "type": "object",
+            "properties": {
+                "customer": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "card": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "customer",
+                "address",
+                "card",
+                "items"
+            ]
+        }
     }
 }
