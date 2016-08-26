@@ -1,0 +1,360 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "",
+        "title": "Carts and items",
+        "description": "Carts and items resources",
+        "license": {
+	    "name": "MIT",
+	    "url": "http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT"
+	}
+    },
+    "host": "orders",
+    "basePath": "/",
+    "securityDefinitions": {},
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json;charset=UTF-8",
+        "text/plain"
+    ],
+    "produces": [
+        "application/json;charset=UTF-8",
+        "text/plain"
+    ],
+    "paths": {
+        "/orders": {
+            "post": {
+                "description": "Create an order",
+                "operationId": "/orders POST",
+                "produces": [
+                    "application/hal+json;charset=UTF-8"
+                ],
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": "Returns cart",
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                }
+            },
+            "get": {
+                "description": "Get orders",
+                "operationId": "/orders GET",
+                "produces": [
+                    "application/hal+json;charset=UTF-8"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Returns orders",
+                        "schema": {
+                            "$ref": "#/definitions/OrdersList"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Order": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "customerId": {
+                    "type": "string"
+                },
+                "customer": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "null"
+                        },
+                        "firstName": {
+                            "type": "string"
+                        },
+                        "lastName": {
+                            "type": "string"
+                        },
+                        "username": {
+                            "type": "string"
+                        },
+                        "addresses": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "number": {
+                                        "type": "string"
+                                    },
+                                    "street": {
+                                        "type": "string"
+                                    },
+                                    "city": {
+                                        "type": "string"
+                                    },
+                                    "postcode": {
+                                        "type": "string"
+                                    },
+                                    "country": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "number",
+                                    "street",
+                                    "city",
+                                    "postcode",
+                                    "country"
+                                ]
+                            }
+                        },
+                        "cards": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "longNum": {
+                                        "type": "string"
+                                    },
+                                    "expires": {
+                                        "type": "string"
+                                    },
+                                    "ccv": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "longNum",
+                                    "expires",
+                                    "ccv"
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "firstName",
+                        "lastName",
+                        "username",
+                        "addresses",
+                        "cards"
+                    ]
+                },
+                "address": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "null"
+                        },
+                        "number": {
+                            "type": "string"
+                        },
+                        "street": {
+                            "type": "string"
+                        },
+                        "city": {
+                            "type": "string"
+                        },
+                        "postcode": {
+                            "type": "string"
+                        },
+                        "country": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "number",
+                        "street",
+                        "city",
+                        "postcode",
+                        "country"
+                    ]
+                },
+                "card": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "null"
+                        },
+                        "longNum": {
+                            "type": "string"
+                        },
+                        "expires": {
+                            "type": "string"
+                        },
+                        "ccv": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "longNum",
+                        "expires",
+                        "ccv"
+                    ]
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "itemId": {
+                                "type": "string"
+                            },
+                            "quantity": {
+                                "type": "integer"
+                            },
+                            "unitPrice": {
+                                "type": "number"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "itemId",
+                            "quantity",
+                            "unitPrice"
+                        ]
+                    }
+                },
+                "shipment": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "name"
+                    ]
+                },
+                "date": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "id",
+                "customerId",
+                "customer",
+                "address",
+                "card",
+                "items",
+                "shipment",
+                "date",
+                "total"
+            ]
+        },
+        "OrdersList": {
+            "type": "object",
+            "properties": {
+                "_embedded": {
+                    "type": "object",
+                    "properties": {
+                        "customerOrders": {
+                            "type": "array",
+                            "items": {}
+                        }
+                    },
+                    "required": [
+                        "customerOrders"
+                    ]
+                },
+                "_links": {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        },
+                        "profile": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        },
+                        "search": {
+                            "type": "object",
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "href"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "self",
+                        "profile",
+                        "search"
+                    ]
+                },
+                "page": {
+                    "type": "object",
+                    "properties": {
+                        "size": {
+                            "type": "integer"
+                        },
+                        "totalElements": {
+                            "type": "integer"
+                        },
+                        "totalPages": {
+                            "type": "integer"
+                        },
+                        "number": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "size",
+                        "totalElements",
+                        "totalPages",
+                        "number"
+                    ]
+                }
+            },
+            "required": [
+                "_embedded",
+                "_links",
+                "page"
+            ]
+        }
+    }
+}
