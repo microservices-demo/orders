@@ -56,39 +56,42 @@ hooks.afterAll((transactions, done) => {
 });
 
 hooks.beforeEach((transaction, done) => {
-    var promisesToKeep = [
-	db.collection('customer').remove({}),
-	db.collection('customer').insertMany(customer),
-	db.collection('card').remove({}),
-	db.collection('card').insertMany(card),
-	db.collection('cart').remove({}),
-	db.collection('cart').insertMany(cart),
-	db.collection('address').remove({}),
-	db.collection('address').insertMany(address),
-	db.collection('item').remove({}),
-	db.collection('item').insertMany(item)
-    ];
-    Promise.all(promisesToKeep).then(function(vls) {
-	done();
-    }, function(vls) {
-	console.error(vls);
-	done();
-    });
+    db.dropDatabase(function(s, r) {
+        var promisesToKeep = [
+	    db.collection('customer').insertMany(customer),
+	    db.collection('card').insertMany(card),
+	    db.collection('cart').insertMany(cart),
+	    db.collection('address').insertMany(address),
+	    db.collection('item').insertMany(item)
+        ];
+        Promise.all(promisesToKeep).then(function(vls) {
+	    done();
+        }, function(vls) {
+	    console.error(vls);
+	    done();
+        });
+    })
+    
 });
 
 
 hooks.before("/orders > POST", function(transaction, done) {
-    transaction.skip = true;
     transaction.request.headers['Content-Type'] = 'application/json';
     transaction.request.body = JSON.stringify(
 	{
-	    "customer":"http://accounts/customers/579f21ae98684924944651bd",
-	    "address": "http://accounts/addresses/579f21ae98684924944651bd",
-	    "card" : "http://accounts/cards/579f21ae98684924944651bf",
-	    "items": "http://accounts/items/"
+	    "customer":"http://accounts-orders-mock:80/customers/57a98d98e4b00679b4a830af",
+	    "address": "http://accounts-orders-mock:80/addresses/57a98d98e4b00679b4a830ad",
+	    "card" : "http://accounts-orders-mock:80/cards/57a98d98e4b00679b4a830ae",
+	    "items": "http://accounts-orders-mock:80/carts/579f21ae98684924944651bf/items"
 	}
     );
 
     done()
 
 });
+
+hooks.before("/orders > GET", function(transaction, done) {
+    transaction.request.headers["User-Agent"] = "curl/7.43.0";
+    transaction.request.headers["Accept"] = "*/*";
+    done();
+})
