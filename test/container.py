@@ -81,7 +81,6 @@ class OrdersContainerTest(unittest.TestCase):
                 self.fail("Couldn't get the API running")
             limit = limit - 1
             sleep(1)
-        sleep(15)
         out = Dredd().test_against_endpoint(
             "orders", 'http://' + self.ip + ':80/',
             links=[self.mongo_container_name, self.container_name],
