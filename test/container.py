@@ -64,7 +64,7 @@ class OrdersContainerTest(unittest.TestCase):
                    '--link',
                    self.shipping_mock.container_name,
                    'weaveworksdemos/orders:' + self.COMMIT]
-        Docker().execute(command)
+        Docker().execute(command, dump_streams=True)
         self.ip = Docker().get_container_ip(OrdersContainerTest.container_name)
 
     def tearDown(self):
@@ -75,13 +75,13 @@ class OrdersContainerTest(unittest.TestCase):
         self.shipping_mock.cleanup()
 
     def test_api_validated(self):
-        limit = 20
+        limit = 30
         while Api().noResponse('http://' + self.ip + ':80/orders'):
             if limit == 0:
                 self.fail("Couldn't get the API running")
             limit = limit - 1
             sleep(1)
-        sleep(15)
+            
         out = Dredd().test_against_endpoint(
             "orders", 'http://' + self.ip + ':80/',
             links=[self.mongo_container_name, self.container_name],

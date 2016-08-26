@@ -12,9 +12,10 @@ env:
 script:
   - set -e
   - ./scripts/build.sh;
-  - ./test/test.sh unit.py
+  - travis_wait ./test/test.sh unit.py
   - ./test/test.sh component.py
-#  - ./test/test.sh container.py --tag $TAG
+  - docker build -t weaveworksdemos/json-server ./test/json-server/
+  - ./test/test.sh container.py --tag $TAG
 
 after_success:
   - set -e;
