@@ -64,7 +64,7 @@ class OrdersContainerTest(unittest.TestCase):
                    '--link',
                    self.shipping_mock.container_name,
                    'weaveworksdemos/orders:' + self.COMMIT]
-        Docker().execute(command)
+        Docker().execute(command, dump_streams=True)
         self.ip = Docker().get_container_ip(OrdersContainerTest.container_name)
 
     def tearDown(self):
