@@ -12,7 +12,7 @@ env:
 script:
   - set -e
   - ./scripts/build.sh;
-  - ./test/test.sh unit.py
+  - travis_wait ./test/test.sh unit.py
   - ./test/test.sh component.py
   - ./test/test.sh container.py --tag $TAG
 
