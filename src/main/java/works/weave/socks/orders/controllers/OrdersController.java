@@ -1,12 +1,10 @@
 package works.weave.socks.orders.controllers;
 
-import com.mongodb.CommandResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.TypeReferences;
@@ -22,12 +20,8 @@ import works.weave.socks.orders.values.PaymentRequest;
 import works.weave.socks.orders.values.PaymentResponse;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -51,9 +45,6 @@ public class OrdersController {
 
     @Value(value = "${http.timeout:5}")
     private long timeout;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/orders", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
@@ -136,32 +127,6 @@ public class OrdersController {
         }
         return matcher.group(0);
     }
-
-   @ResponseStatus(HttpStatus.OK)
-   @RequestMapping(method = RequestMethod.GET, path = "/orders/health")
-   public
-   @ResponseBody
-   Map<String, List<HealthCheck>> getHealth() {
-      Map<String, List<HealthCheck>> map = new HashMap<String, List<HealthCheck>>();
-      List<HealthCheck> healthChecks = new ArrayList<HealthCheck>();
-      Date dateNow = Calendar.getInstance().getTime();
-
-      HealthCheck app = new HealthCheck("orders", "OK", dateNow);
-      HealthCheck database = new HealthCheck("orders-db", "OK", dateNow);
-
-      try {
-         mongoTemplate.executeCommand("{ buildInfo: 1 }");
-      } catch (Exception e) {
-         database.setStatus("err");
-      }
-
-      healthChecks.add(app);
-      healthChecks.add(database);
-
-      map.put("health", healthChecks);
-      return map;
-    }
-
 
 //    TODO: Add link to shipping
 //    @RequestMapping(method = RequestMethod.GET, value = "/orders")
