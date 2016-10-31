@@ -1,8 +1,7 @@
 package works.weave.socks.orders.controllers;
 
-import com.mongodb.CommandResult;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import works.weave.socks.orders.entities.HealthCheck;
