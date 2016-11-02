@@ -1,6 +1,7 @@
 package works.weave.socks.orders.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -9,6 +10,8 @@ import java.util.Date;
 public class HealthCheck {
    private String service;
    private String status;
+
+   @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
    private Date date = Calendar.getInstance().getTime();
 
    public HealthCheck() {
