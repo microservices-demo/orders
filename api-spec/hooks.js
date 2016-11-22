@@ -5,16 +5,16 @@ const ObjectID = require('mongodb').ObjectID;
 let db;
 
 const address = [
-    {"_id":ObjectID("579f21ae98684924944651bd"),"_class":"works.weave.socks.accounts.entities.Address","number":"69","street":"Wilson Street","city":"Hartlepool","postcode":"TS26 8JU","country":"United Kingdom"},
-    {"_id":ObjectID("579f21ae98684924944651c0"),"_class":"works.weave.socks.accounts.entities.Address","number":"122","street":"Radstone WayNet","city":"Northampton","postcode":"NN2 8NT","country":"United Kingdom"},
-    {"_id":ObjectID("579f21ae98684924944651c3"),"_class":"works.weave.socks.accounts.entities.Address","number":"3","street":"Radstone Way","city":"Northampton","postcode":"NN2 8NT","country":"United Kingdom"}
+    {"_id":ObjectID("579f21ae98684924944651bd"),"_class":"works.weave.socks.users.entities.Address","number":"69","street":"Wilson Street","city":"Hartlepool","postcode":"TS26 8JU","country":"United Kingdom"},
+    {"_id":ObjectID("579f21ae98684924944651c0"),"_class":"works.weave.socks.users.entities.Address","number":"122","street":"Radstone WayNet","city":"Northampton","postcode":"NN2 8NT","country":"United Kingdom"},
+    {"_id":ObjectID("579f21ae98684924944651c3"),"_class":"works.weave.socks.users.entities.Address","number":"3","street":"Radstone Way","city":"Northampton","postcode":"NN2 8NT","country":"United Kingdom"}
 ];
 
 
 const card = [
-    {"_id":ObjectID("579f21ae98684924944651be"),"_class":"works.weave.socks.accounts.entities.Card","longNum":"8575776807334952","expires":"08/19","ccv":"014"},
-    {"_id":ObjectID("579f21ae98684924944651c1"),"_class":"works.weave.socks.accounts.entities.Card","longNum":"8918468841895184","expires":"08/19","ccv":"597"},
-    {"_id":ObjectID("579f21ae98684924944651c4"),"_class":"works.weave.socks.accounts.entities.Card","longNum":"6426429851404909","expires":"08/19","ccv":"381"}
+    {"_id":ObjectID("579f21ae98684924944651be"),"_class":"works.weave.socks.users.entities.Card","longNum":"8575776807334952","expires":"08/19","ccv":"014"},
+    {"_id":ObjectID("579f21ae98684924944651c1"),"_class":"works.weave.socks.users.entities.Card","longNum":"8918468841895184","expires":"08/19","ccv":"597"},
+    {"_id":ObjectID("579f21ae98684924944651c4"),"_class":"works.weave.socks.users.entities.Card","longNum":"6426429851404909","expires":"08/19","ccv":"381"}
 ];
 
 const cart = [
@@ -29,10 +29,10 @@ const item = [
 
 
 const customer = [
-    {"_id":"579f21ae98684924944651bf","_class":"works.weave.socks.accounts.entities.Customer","firstName":"Eve","lastName":"Berger","username":"Eve_Berger","addresses":[{"$ref":"address","$id":ObjectID("579f21ae98684924944651bd")}],"cards":[{"$ref":"card","$id":ObjectID("579f21ae98684924944651be")}]
+    {"_id":"579f21ae98684924944651bf","_class":"works.weave.socks.users.entities.Customer","firstName":"Eve","lastName":"Berger","username":"Eve_Berger","addresses":[{"$ref":"address","$id":ObjectID("579f21ae98684924944651bd")}],"cards":[{"$ref":"card","$id":ObjectID("579f21ae98684924944651be")}]
     },
-    {"_id":"579f21ae98684924944651c2","_class":"works.weave.socks.accounts.entities.Customer","firstName":"User","lastName":"Name","username":"user","addresses":[{"$ref":"address","$id":ObjectID("579f21ae98684924944651c0")}],"cards":[{"$ref":"card","$id":ObjectID("579f21ae98684924944651c1")}]},
-    {"_id":"579f21ae98684924944651c5","_class":"works.weave.socks.accounts.entities.Customer","firstName":"User1","lastName":"Name1","username":"user1","addresses":[{"$ref":"address","$id":ObjectID("579f21ae98684924944651c3")}],"cards":[{"$ref":"card","$id":ObjectID("579f21ae98684924944651c4")}]}
+    {"_id":"579f21ae98684924944651c2","_class":"works.weave.socks.users.entities.Customer","firstName":"User","lastName":"Name","username":"user","addresses":[{"$ref":"address","$id":ObjectID("579f21ae98684924944651c0")}],"cards":[{"$ref":"card","$id":ObjectID("579f21ae98684924944651c1")}]},
+    {"_id":"579f21ae98684924944651c5","_class":"works.weave.socks.users.entities.Customer","firstName":"User1","lastName":"Name1","username":"user1","addresses":[{"$ref":"address","$id":ObjectID("579f21ae98684924944651c3")}],"cards":[{"$ref":"card","$id":ObjectID("579f21ae98684924944651c4")}]}
 ];
 
 
@@ -71,7 +71,7 @@ hooks.beforeEach((transaction, done) => {
 	    done();
         });
     })
-    
+
 });
 
 
@@ -79,10 +79,10 @@ hooks.before("/orders > POST", function(transaction, done) {
     transaction.request.headers['Content-Type'] = 'application/json';
     transaction.request.body = JSON.stringify(
 	{
-	    "customer":"http://accounts-orders-mock:80/customers/57a98d98e4b00679b4a830af",
-	    "address": "http://accounts-orders-mock:80/addresses/57a98d98e4b00679b4a830ad",
-	    "card" : "http://accounts-orders-mock:80/cards/57a98d98e4b00679b4a830ae",
-	    "items": "http://accounts-orders-mock:80/carts/579f21ae98684924944651bf/items"
+	    "customer":"http://users-orders-mock:80/customers/57a98d98e4b00679b4a830af",
+	    "address": "http://users-orders-mock:80/addresses/57a98d98e4b00679b4a830ad",
+	    "card" : "http://users-orders-mock:80/cards/57a98d98e4b00679b4a830ae",
+	    "items": "http://users-orders-mock:80/carts/579f21ae98684924944651bf/items"
 	}
     );
 
