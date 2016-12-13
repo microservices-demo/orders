@@ -16,7 +16,7 @@ This build is built, tested and released by travis.
 `mvn spring-boot:run`
 
 # Use
-`curl localhost:8082`
+`chromium-browser http://localhost:8082`
 
 # Push
 `GROUP=weaveworksdemos COMMIT=test ./scripts/push.sh`
