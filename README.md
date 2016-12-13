@@ -14,10 +14,3 @@ This build is built, tested and released by travis.
 
 # Push
 `GROUP=weaveworksdemos COMMIT=test ./scripts/push.sh`
-
-## Redesign
-
-This microservices will shortly go through a redesign to allow for
-multi-step checkouts. A rough sketch of the flow is below:
-
-![Orders flow](./Orders-flow.png)
