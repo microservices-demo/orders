@@ -6,11 +6,17 @@ A microservices-demo service that provides ordering capabilities.
 
 This build is built, tested and released by travis.
 
+# Build
+`GROUP=weaveworksdemos COMMIT=test ./scripts/build.sh`
+
 # Test
 `./test/test.sh < python testing file >`. For example: `./test/test.sh unit.py`
 
-# Build
-`GROUP=weaveworksdemos COMMIT=test ./scripts/build.sh`
+# Run
+`mvn spring-boot:run`
+
+# Use
+`curl localhost:8082`
 
 # Push
 `GROUP=weaveworksdemos COMMIT=test ./scripts/push.sh`
