@@ -23,10 +23,10 @@ else
 fi
 CODE_DIR=$(cd $SCRIPT_DIR/..; pwd)
 echo $CODE_DIR
-$DOCKER_CMD run -u 1000 --rm -v $HOME/.m2:/root/.m2 -v $CODE_DIR:/usr/src/mymaven -w /usr/src/mymaven maven:3.2-jdk-8 mvn -DskipTests package
+$DOCKER_CMD run --rm -v $HOME/.m2:/root/.m2 -v $CODE_DIR:/usr/src/mymaven -w /usr/src/mymaven maven:3.2-jdk-8 mvn -DskipTests package
 
-cp $CODE_DIR/docker $CODE_DIR/target/docker/ -rf
-cp $CODE_DIR/target/*.jar $CODE_DIR/target/docker/${IMAGE} -rf
+cp -rf $CODE_DIR/docker $CODE_DIR/target/docker/ 
+cp -rf $CODE_DIR/target/*.jar $CODE_DIR/target/docker/${IMAGE} 
 
 REPO=${GROUP}/${IMAGE}
     $DOCKER_CMD build -t ${REPO}:${COMMIT} $CODE_DIR/target/docker/${IMAGE};
