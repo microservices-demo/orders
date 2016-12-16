@@ -11,7 +11,7 @@ env:
 
 script:
   - set -e
-  - ./scripts/build.sh;
+  - sudo ./scripts/build.sh;
   - travis_wait ./test/test.sh unit.py
   - ./test/test.sh component.py
   - docker build -t weaveworksdemos/json-server ./test/json-server/
