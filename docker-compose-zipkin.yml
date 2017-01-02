@@ -2,7 +2,7 @@ version: '2'
 
 services:
   orders:
-    image: orderstest
+    image: weaveworksdemos/orders
     hostname: orders
     restart: always
     cap_drop:
