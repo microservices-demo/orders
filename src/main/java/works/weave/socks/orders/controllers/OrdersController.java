@@ -52,6 +52,12 @@ public class OrdersController {
     @ResponseBody
     CustomerOrder newOrder(@RequestBody NewOrderResource item) {
         try {
+
+            if (item.address == null || item.customer == null || item.card == null || item.items == null) {
+                throw new InvalidOrderException("Invalid order request. Order requires customer, address, card and items.");
+            }
+
+
             LOG.debug("Starting calls");
             Future<Resource<Address>> addressFuture = asyncGetService.getResource(item.address, new TypeReferences
                     .ResourceType<Address>() {
@@ -156,6 +162,13 @@ public class OrdersController {
     @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE, reason = "Payment declined")
     public class PaymentDeclinedException extends IllegalStateException {
         public PaymentDeclinedException(String s) {
+            super(s);
+        }
+    }
+
+    @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE, reason = "Invalid order request. Order requires customer, address, card and items.")
+    public class InvalidOrderException extends IllegalStateException {
+        public InvalidOrderException(String s) {
             super(s);
         }
     }
