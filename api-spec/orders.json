@@ -2,8 +2,8 @@
     "swagger": "2.0",
     "info": {
         "version": "",
-        "title": "Carts and items",
-        "description": "Carts and items resources",
+        "title": "Orders",
+        "description": "Service for processing orders",
         "license": {
 	    "name": "MIT",
 	    "url": "http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT"
