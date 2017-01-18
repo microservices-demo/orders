@@ -41,7 +41,7 @@ tag_and_push_all() {
 }
 
 # Push snapshot when in master
-if [ "$TRAVIS_BRANCH" == "master" ]; then
+if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     tag_and_push_all master-${COMMIT:0:8}
 fi;
 
