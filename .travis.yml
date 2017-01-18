@@ -7,7 +7,7 @@ jdk:
 install: true
 
 env:
-  - GROUP=weaveworksdemos COMMIT=$TRAVIS_COMMIT TAG=$TRAVIS_TAG REPO=orders;
+  - GROUP=weaveworksdemos COMMIT=$TRAVIS_COMMIT TAG=$TRAVIS_TAG BRANCH=$TRAVIS_BRANCH REPO=orders;
 
 script:
   - set -e
@@ -24,6 +24,9 @@ after_success:
       echo "This is a build triggered by an external PR. Skipping docker push.";
       exit 0;
     fi;
+  - echo ================ Testing the environment variables =================
+  - echo $BRANCH
+  - echo $TAG
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS;
   - ./scripts/push.sh
 notifications:
