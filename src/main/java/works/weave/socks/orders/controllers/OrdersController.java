@@ -81,19 +81,19 @@ public class OrdersController {
                     cardFuture.get(timeout, TimeUnit.SECONDS).getContent(),
                     customerFuture.get(timeout, TimeUnit.SECONDS).getContent(),
                     amount);
-            LOG.debug("Sending payment request: " + paymentRequest);
+            LOG.info("Sending payment request: " + paymentRequest);
             Future<PaymentResponse> paymentFuture = asyncGetService.postResource(
                     config.getPaymentUri(),
                     paymentRequest,
                     new ParameterizedTypeReference<PaymentResponse>() {
                     });
             PaymentResponse paymentResponse = paymentFuture.get(timeout, TimeUnit.SECONDS);
-            LOG.debug("Received payment response: " + paymentResponse);
+            LOG.info("Received payment response: " + paymentResponse);
             if (paymentResponse == null) {
                 throw new PaymentDeclinedException("Unable to parse authorisation packet");
             }
             if (!paymentResponse.isAuthorised()) {
-                throw new PaymentDeclinedException("Payment declined");
+                throw new PaymentDeclinedException(paymentResponse.getMessage());
             }
 
             // Ship
