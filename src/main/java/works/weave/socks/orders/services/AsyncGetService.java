@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,7 @@ public class AsyncGetService {
     public <T> Future<Resource<T>> getResource(URI url, TypeReferences.ResourceType<T> type) throws
             InterruptedException, IOException {
         RequestEntity<Void> request = RequestEntity.get(url).accept(HAL_JSON).build();
-        return inHystrixGroup("Get:" + url.getHost(), () -> {
+        return asHystrixCommand(url.getHost(), "get", () -> {
             LOG.debug("Requesting: " + request.toString());
             Resource<T> body = restProxyTemplate.getRestTemplate().exchange(request, type).getBody();
             LOG.debug("Received: " + body.toString());
@@ -81,7 +82,7 @@ public class AsyncGetService {
     public <T> Future<Resources<T>> getDataList(URI url, TypeReferences.ResourcesType<T> type) throws
             InterruptedException, IOException {
         RequestEntity<Void> request = RequestEntity.get(url).accept(HAL_JSON).build();
-        return inHystrixGroup("Get:" + url.getHost(), () -> {
+        return asHystrixCommand(url.getHost(), "get", () -> {
             LOG.debug("Requesting: " + request.toString());
             Resources<T> body = restProxyTemplate.getRestTemplate().exchange(request, type).getBody();
             LOG.debug("Received: " + body.toString());
@@ -93,7 +94,7 @@ public class AsyncGetService {
     public <T> Future<List<T>> getDataList(URI url, ParameterizedTypeReference<List<T>> type) throws
             InterruptedException, IOException {
         RequestEntity<Void> request = RequestEntity.get(url).accept(MediaType.APPLICATION_JSON).build();
-        return inHystrixGroup("Get:" + url.getHost(), () -> {
+        return asHystrixCommand(url.getHost(), "get", () -> {
             LOG.debug("Requesting: " + request.toString());
             List<T> body = restProxyTemplate.getRestTemplate().exchange(request, type).getBody();
             LOG.debug("Received: " + body.toString());
@@ -107,7 +108,7 @@ public class AsyncGetService {
         RequestEntity<B> request = RequestEntity.post(uri).contentType(MediaType.APPLICATION_JSON).accept(MediaType
                 .APPLICATION_JSON).body(body);
 
-        return inHystrixGroup("Post:" + uri.getHost(), () -> {
+        return asHystrixCommand(uri.getHost(), "post", () -> {
             LOG.debug("Requesting: " + request.toString());
             T responseBody = restProxyTemplate.getRestTemplate().exchange(request, returnType).getBody();
             LOG.debug("Received: " + responseBody);
@@ -115,8 +116,11 @@ public class AsyncGetService {
         });
     }
 
-    private static <T> Future<T> inHystrixGroup(String groupName, Supplier<T> supplier) {
-        return new HystrixCommand<T>(HystrixCommandGroupKey.Factory.asKey(groupName)) {
+    private static <T> Future<T> asHystrixCommand(String serviceName, String commandName, Supplier<T> supplier) {
+        return new HystrixCommand<T>(HystrixCommand.Setter
+                .withGroupKey(HystrixCommandGroupKey.Factory.asKey(serviceName))
+                .andCommandKey(HystrixCommandKey.Factory.asKey(serviceName + ":" + commandName))
+        ) {
             @Override
             protected T run() throws Exception {
                 return supplier.get();
