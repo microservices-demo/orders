@@ -1,12 +1,17 @@
 package works.weave.socks.orders.middleware;
 
 import io.prometheus.client.Histogram;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 public class HTTPMonitoringInterceptor implements HandlerInterceptor {
     static final Histogram requestLatency = Histogram.build()
@@ -19,6 +24,9 @@ public class HTTPMonitoringInterceptor implements HandlerInterceptor {
 
     @Value("${spring.application.name:orders}")
     private String serviceName;
+
+    @Autowired
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse
@@ -36,7 +44,7 @@ public class HTTPMonitoringInterceptor implements HandlerInterceptor {
         requestLatency.labels(
                 serviceName,
                 httpServletRequest.getMethod(),
-                httpServletRequest.getServletPath(),
+                getMatchingURLPattern(httpServletRequest),
                 Integer.toString(httpServletResponse.getStatus())
         ).observe(seconds);
     }
@@ -44,5 +52,22 @@ public class HTTPMonitoringInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse
             httpServletResponse, Object o, Exception e) throws Exception {
+    }
+
+    private String getMatchingURLPattern(HttpServletRequest httpServletRequest) {
+        String res = httpServletRequest.getServletPath();
+
+        for (Map.Entry<RequestMappingInfo, HandlerMethod> item : requestMappingHandlerMapping
+                .getHandlerMethods().entrySet()) {
+            RequestMappingInfo mapping = item.getKey();
+            if (mapping.getPatternsCondition().getMatchingCondition(httpServletRequest) != null &&
+                    mapping.getMethodsCondition().getMatchingCondition(httpServletRequest) !=
+                            null) {
+                res = mapping.getPatternsCondition().getMatchingCondition(httpServletRequest)
+                        .getPatterns().iterator().next();
+                break;
+            }
+        }
+        return res;
     }
 }
