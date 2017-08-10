@@ -1,4 +1,4 @@
-FROM weaveworksdemos/msd-java:latest
+FROM weaveworksdemos/msd-java:8u131
 
 WORKDIR /usr/src/app
 COPY *.jar ./app.jar
