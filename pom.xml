@@ -25,6 +25,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.spikhalskiy.futurity</groupId>
+            <artifactId>futurity-core</artifactId>
+            <version>0.3-RC3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.feedzai.commons.tracing</groupId>
+            <artifactId>tracing-lib-jaeger</artifactId>
+            <version>0.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-rest</artifactId>
         </dependency>

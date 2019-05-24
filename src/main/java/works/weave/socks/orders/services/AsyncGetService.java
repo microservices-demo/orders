@@ -2,6 +2,7 @@ package works.weave.socks.orders.services;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.feedzai.commons.tracing.engine.TraceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,8 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Future;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 
@@ -51,43 +53,48 @@ public class AsyncGetService {
         halTemplate.setMessageConverters(Collections.singletonList(halConverter));
     }
 
-    @Async
-    public <T> Future<Resource<T>> getResource(URI url, TypeReferences.ResourceType<T> type) throws
-            InterruptedException, IOException {
-        RequestEntity<Void> request = RequestEntity.get(url).accept(HAL_JSON).build();
+
+    public <T> CompletableFuture<Resource<T>> getResource(URI url, TypeReferences.ResourceType<T> type) {
+        RequestEntity request = getRequestEntity(url, HAL_JSON);
         LOG.debug("Requesting: " + request.toString());
-        Resource<T> body = restProxyTemplate.getRestTemplate().exchange(request, type).getBody();
+        CompletableFuture body = CompletableFuture.supplyAsync(() -> restProxyTemplate.getRestTemplate().exchange(request, type).getBody());
         LOG.debug("Received: " + body.toString());
-        return new AsyncResult<>(body);
+        return body;
     }
 
-    @Async
-    public <T> Future<Resources<T>> getDataList(URI url, TypeReferences.ResourcesType<T> type) throws
-            InterruptedException, IOException {
-        RequestEntity<Void> request = RequestEntity.get(url).accept(HAL_JSON).build();
-        LOG.debug("Requesting: " + request.toString());
-        Resources<T> body = restProxyTemplate.getRestTemplate().exchange(request, type).getBody();
-        LOG.debug("Received: " + body.toString());
-        return new AsyncResult<>(body);
+    private RequestEntity getRequestEntity(URI url, MediaType type) {
+        RequestEntity.HeadersBuilder<?> builder = RequestEntity.get(url).accept(type);
+        ((Map<String, String>) TraceUtil.instance().serializeContext()).forEach((k, v) -> builder.header(k, v));
+        return builder.build();
     }
 
-    @Async
-    public <T> Future<List<T>> getDataList(URI url, ParameterizedTypeReference<List<T>> type) throws
-            InterruptedException, IOException {
-        RequestEntity<Void> request = RequestEntity.get(url).accept(MediaType.APPLICATION_JSON).build();
+    public <T> CompletableFuture<Resources<T>> getDataList(URI url, TypeReferences.ResourcesType<T> type) {
+        RequestEntity<Void> request = getRequestEntity(url, HAL_JSON);
         LOG.debug("Requesting: " + request.toString());
-        List<T> body = restProxyTemplate.getRestTemplate().exchange(request, type).getBody();
+        CompletableFuture<Resources<T>> body = CompletableFuture.supplyAsync(() -> restProxyTemplate.getRestTemplate().exchange(request, type).getBody());
         LOG.debug("Received: " + body.toString());
-        return new AsyncResult<>(body);
+        return body;
     }
 
-    @Async
-    public <T, B> Future<T> postResource(URI uri, B body, ParameterizedTypeReference<T> returnType) {
-        RequestEntity<B> request = RequestEntity.post(uri).contentType(MediaType.APPLICATION_JSON).accept(MediaType
-                .APPLICATION_JSON).body(body);
+    public <T> CompletableFuture<List<T>> getDataList(URI url, ParameterizedTypeReference<List<T>> type) {
+        RequestEntity<Void> request = getRequestEntity(url, MediaType.APPLICATION_JSON);
         LOG.debug("Requesting: " + request.toString());
-        T responseBody = restProxyTemplate.getRestTemplate().exchange(request, returnType).getBody();
+        CompletableFuture<List<T>> body = CompletableFuture.supplyAsync(() -> restProxyTemplate.getRestTemplate().exchange(request, type).getBody());
+        LOG.debug("Received: " + body.toString());
+        return body;
+    }
+
+
+    public <T, B> CompletableFuture<T> postResource(URI uri, B body, ParameterizedTypeReference<T> returnType) {
+        RequestEntity.BodyBuilder builder = RequestEntity.post(uri).contentType(MediaType.APPLICATION_JSON).accept(MediaType
+                .APPLICATION_JSON);
+        ((Map<String, String>) TraceUtil.instance().serializeContext()).forEach((k, v) -> builder.header(k, v));
+        RequestEntity<B> request = builder.body(body);
+        LOG.debug("Requesting: " + request.toString());
+        CompletableFuture<T> responseBody = CompletableFuture.supplyAsync(() -> restProxyTemplate.getRestTemplate().exchange(request, returnType).getBody());
         LOG.debug("Received: " + responseBody);
-        return new AsyncResult<>(responseBody);
+        return responseBody;
     }
+
+
 }

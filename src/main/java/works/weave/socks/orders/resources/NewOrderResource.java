@@ -3,6 +3,7 @@ package works.weave.socks.orders.resources;
 import org.hibernate.validator.constraints.URL;
 
 import java.net.URI;
+import java.util.UUID;
 
 public class NewOrderResource {
     @URL
@@ -13,4 +14,5 @@ public class NewOrderResource {
     public URI card;
     @URL
     public URI items;
+    public UUID id = UUID.randomUUID();
 }
