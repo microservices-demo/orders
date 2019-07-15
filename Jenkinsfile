@@ -16,6 +16,9 @@ podTemplate(name: label, label: label, nodeSelector: 'function=docker_workers', 
             """
         }
       }
+    stage('Clean Docker Image') {
+      build job: 'accounts-e2e-test-runner', parameters: [string(name: 'BRANCH', value: 'master'), string(name: 'ENVIRONMENT', value: 'STAGE'), string(name: 'SLACK_ROOM', value: 'cx-eng')]
     }
+   }
   }
 }
