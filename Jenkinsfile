@@ -18,7 +18,6 @@ podTemplate(name: label, label: label, nodeSelector: 'function=docker_workers', 
       }
     stage('Clean Docker Image') {
       build job: 'test-param-trigger', parameters: [string(name: 'BRANCH', value: env.BRANCH_NAME), string(name: 'ENVIRONMENT', value: 'STAGE'), string(name: 'SLACK_ROOM', value: 'cx-eng')]
-      githubNotify description: 'This is a shorted example',  status: 'SUCCESS'
     }
    }
   }
