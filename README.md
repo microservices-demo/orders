@@ -27,7 +27,4 @@ test
 `curl http://localhost:8082`
 
 # Push
-`GROUP=weaveworksdemos COMMIT=test ./scripts/push.sh`
-
-
-#test
+`GROUP=weaveworksdemos COMMIT=test ./scripts/push.sh
