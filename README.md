@@ -30,4 +30,3 @@ test
 `GROUP=weaveworksdemos COMMIT=test ./scripts/push.sh
 
 
-#test-2
