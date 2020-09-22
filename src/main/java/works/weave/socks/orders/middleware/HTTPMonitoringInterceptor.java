@@ -20,9 +20,9 @@ import java.util.Set;
 
 public class HTTPMonitoringInterceptor implements HandlerInterceptor {
     static final Histogram requestLatency = Histogram.build()
-            .name("request_duration_seconds")
+            .name("http_request_duration_seconds")
             .help("Request duration in seconds.")
-            .labelNames("service", "method", "route", "status_code")
+            .labelNames("service", "method", "path", "status_code")
             .register();
 
     private static final String startTimeKey = "startTime";
