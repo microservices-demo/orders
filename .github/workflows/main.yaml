@@ -1,0 +1,89 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - "*"  # run for branches
+    tags:
+      - "*"  # run for tags
+  pull_request:
+    branches:
+      - "*"  # run for branches
+    tags:
+      - "*"  # run for tags
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GROUP: weaveworksdemos
+      COMMIT: ${{ github.sha }}
+      REPO: orders
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: mvn -B -DskipTests package --file pom.xml
+
+      - name: Unit Tests
+        run: mvn -q test
+
+      - name: Integration Tests
+        run: mvn integration-test
+
+      # Build docker image for service
+      - name: Build docker image
+        uses: docker/build-push-action@v1
+        with:
+          push: false
+          dockerfile: docker/orders/Dockerfile.github
+          repository: ${{ env.GROUP }}/${{ env.REPO }}
+          tag_with_ref: true
+          tag_with_sha: true
+          tags: ${{ github.sha }}
+
+      # Build docker image for mock service
+      - name: Build mock docker image
+        uses: docker/build-push-action@v1
+        with:
+          push: false
+          path: test/json-server/
+          dockerfile: test/json-server/Dockerfile
+          repository: weaveworksdemos/json-server
+          tags: latest
+          
+      # Run simple test against built container
+      - name: Test docker image
+        env:
+          DOCKER_BUILDKIT: 1
+        run: ./test/test.sh container.py --tag ${GITHUB_SHA}
+
+      # Upload coverage results to coveralls
+      - name: Submit Coveralls
+        env:
+          COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+        run: mvn -DrepoToken=${COVERALLS_TOKEN} -DserviceJobId=${GITHUB_RUN_ID} -Dbranch=${GITHUB_REF} -DpullRequest=${GITHUB_HEAD_REF} -DserviceName=GITHUB verify jacoco:report coveralls:report
+
+      # Push to dockerhub
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v1
+        if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master'
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+          dockerfile: docker/orders/Dockerfile.github
+          repository: ${{ env.GROUP }}/${{ env.REPO }}
+          tag_with_ref: true
+          tag_with_sha: true
