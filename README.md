@@ -3,14 +3,13 @@
 
 # orders
 A microservices-demo service that provides ordering capabilities.
-
 This build is built, tested and released by travis.
 
 # API Spec
-
 Checkout the API Spec [here](http://microservices-demo.github.io/api/index?url=https://raw.githubusercontent.com/microservices-demo/orders/master/api-spec/orders.json)
 
 # Build
+test 
 
 ## Jar
 `mvn -DskipTests package`
@@ -28,4 +27,4 @@ Checkout the API Spec [here](http://microservices-demo.github.io/api/index?url=h
 `curl http://localhost:8082`
 
 # Push
-`GROUP=weaveworksdemos COMMIT=test ./scripts/push.sh`
+`GROUP=weaveworksdemos COMMIT=test ./scripts/push.sh
