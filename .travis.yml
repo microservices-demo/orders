@@ -12,7 +12,7 @@ env:
 script:
   - set -e
   - sudo ./scripts/build.sh;
-  - travis_wait ./test/test.sh unit.py
+  - ./test/test.sh unit.py
   - ./test/test.sh component.py
   - docker build -t weaveworksdemos/json-server ./test/json-server/
   - ./test/test.sh container.py --tag $TAG
@@ -29,3 +29,7 @@ after_success:
 notifications:
   slack:
     secure: lAK+IGj7PLcxuBWbA5/bT9O1bJ5rVPpWVhWsPUXsSrrsMplOssVEGTIMjmM/iy88vhDMdR7rgCuoPg1/mlsT+EFfW+7RTbdtkeP3Ai7NAGO7MS5sVundp3zyaLfX5HtWaBDGnHRfKgTqv3iOT7Px27mSY7Bx0QIKjgY//ywTJQ5PviPXsKuHetFFHClPlOUiDueShMG/0WTjP0BKqbQ688sVPIb3+F4HgVdU3hUg8jbzKiMC4Xw7VCSF9FJJM1nmwaKotDPKUOTNTPnl6rAa64va/xJpitoPJMQlQTps0QhYYMSAXugRC5PObN/hEt2LABfCcmTqSfvt5RuJRJhNx+qJkMg+DbalrRW6mCa9lyRjt37SEPDD1DnG5mWKopbnMVP8hIWyVpzv/2CBt4yGOo04fMT0HutSR8I1hYxl1GclFMCMyPkQ/9rDHOZAxelqZ9SM0jK+8N5rVwEHmIgkjQssCOa5UB0yF/Xbn71FKGnNfdxPpU3MjCKmpHFNpl3mba5gTMK08zJqbLuw55DMYnION8E0c/WWiVRooPxA7/23eN1t4tlA7JrX3xHX3p4SmzWqqB2pLZdqW+KHPKo8i19qoCJ4+CBaay38ddyH6Jvj8kYfOGJH5j2JvffW75Zc6JvUkzvBEKkj3iN7jGb5pvslN9ucxEksMBvWrq3vhts=
+
+cache:
+  directories:
+  - $HOME/.m2
