@@ -2,12 +2,13 @@ package works.weave.socks.orders.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.mvc.TypeReferences;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import works.weave.socks.orders.resources.NewOrderResource;
 import works.weave.socks.orders.services.AsyncGetService;
 import works.weave.socks.orders.values.PaymentRequest;
 import works.weave.socks.orders.values.PaymentResponse;
+import org.springframework.hateoas.server.core.TypeReferences.EntityModelType;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -28,11 +30,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 
 @RepositoryRestController
 public class OrdersController {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private EntityLinks entityLinks;
 
     @Autowired
     private OrdersConfigurationProperties config;
@@ -59,14 +64,11 @@ public class OrdersController {
 
 
             LOG.debug("Starting calls");
-            Future<Resource<Address>> addressFuture = asyncGetService.getResource(item.address, new TypeReferences
-                    .ResourceType<Address>() {
+            Future<EntityModel<Address>> addressFuture = asyncGetService.getResource(item.address, new EntityModelType<Address>() {
             });
-            Future<Resource<Customer>> customerFuture = asyncGetService.getResource(item.customer, new TypeReferences
-                    .ResourceType<Customer>() {
+            Future<EntityModel<Customer>> customerFuture = asyncGetService.getResource(item.customer, new EntityModelType<Customer>() {
             });
-            Future<Resource<Card>> cardFuture = asyncGetService.getResource(item.card, new TypeReferences
-                    .ResourceType<Card>() {
+            Future<EntityModel<Card>> cardFuture = asyncGetService.getResource(item.card, new EntityModelType<Card>() {
             });
             Future<List<Item>> itemsFuture = asyncGetService.getDataList(item.items, new
                     ParameterizedTypeReference<List<Item>>() {
@@ -97,7 +99,10 @@ public class OrdersController {
             }
 
             // Ship
-            String customerId = parseId(customerFuture.get(timeout, TimeUnit.SECONDS).getId().getHref());
+            EntityModel customer = customerFuture.get(timeout, TimeUnit.SECONDS);
+            String customerId = parseId(customer.getRequiredLink("self").getHref());
+            // Optional<Long> id = customer.Id;
+            // String customerId = "abc";//parseId(entityLinks.linkToItemResource(customer, customer.getId()));
             Future<Shipment> shipmentFuture = asyncGetService.postResource(config.getShippingUri(), new Shipment
                     (customerId), new ParameterizedTypeReference<Shipment>() {
             });
